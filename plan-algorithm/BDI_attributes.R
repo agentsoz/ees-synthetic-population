@@ -106,7 +106,7 @@ read_locations_from_csv<-function(locations_csv_file)
 write_attribute_plan<- function (plan_attributes,locations,input_location,output_location)
 {
 
-base_plan<-read.delim(input_location, header = F,quote="")
+base_plan<-read.delim(input_location, header = F,sep="\n",quote="")
 
 
 
@@ -254,7 +254,6 @@ main<-function()
   
   args<-commandArgs(trailingOnly = T)
   #args<-c("typical-summer-weekday/numbers.csv","typical-summer-weekday/dependents.csv","typical-summer-weekday/thresholds.csv","typical-summer-weekday/stay.csv","typical-summer-weekday/prob_go_home.csv","typical-summer-weekday/plans.xml","typical-summer-weekday/test.xml","Refuges.csv")
-
   numbers<-read_numbers(numbers_file = args[1])
   dependents<-read_dependents(dependents_file = args[2])
   thresholds<-read_thresholds(thresholds_file = args[3])
