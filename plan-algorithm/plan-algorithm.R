@@ -226,19 +226,23 @@ allocation_checker<-function(activity_locations,number_of_agents,subgroup)
   return(activity_locations)
 }
 
-plan_locations<-function (plan_times,activity_locations,locality_distances,stay_in_locality)
+plan_locations<-function (plan_times,activity_locations,locality_distances,locality_allocations,stay_in_locality)
 {
   PLANS<-plan_times  
   for (h in 1:length(PLANS))
   {
     plan<-PLANS[[h]]  
-    
-    #choose home location
-    valid<-activity_locations[[1]][activity_locations[[1]][2]>0,]
-    choice<-sample(nrow(valid),1)
-    home<-valid[choice,]
+    #choos home locality
+    flag=0
+    while(flag==0)
+    {
+      home_locality=sample(unique(activity_locations[['home']][[6]]),1)
+      flag=sum(activity_locations[['home']][[2]][activity_locations[['home']][[6]]==home_locality])
+    }
+    #choose home in locality
+    home<-activity_locations[["home"]][sample(rownames(activity_locations[['home']][activity_locations[['home']][[6]]==home_locality,]),1),]
     #change allocation for that home
-    activity_locations[[1]][rownames(home),][2]=activity_locations[[1]][rownames(home),][2]-1
+    activity_locations[["home"]][rownames(home),][2]=activity_locations[["home"]][rownames(home),][2]-1
     
     
     #add home to plan
@@ -260,27 +264,27 @@ plan_locations<-function (plan_times,activity_locations,locality_distances,stay_
       activity<-plan[i,2]
       if (activity!="home")
       {
-        # 
-        # ## OLD METHOD (using probability based on 1/distance^2)
-        # #find Euclidean distance between home and potential destinations  
-        # distances=activity_locations[[activity]][,3:4]-unlist(matrix(home[2:3],nrow(activity_locations[[activity]]),2,byrow = T))
-        # distances=distances^2
-        # distances=sqrt(rowSums(distances))
-        # distances=distances[distances!=0] #remove home from activity list if it is there
-        # #choose based on inverse square law ##ASSUMPTION
-        # 
-        # place=sample(distances,1,prob = 1/(distances^2))
+        #find the relevant localities for this activity
         distances<-locality_distances[locality,names(locality_distances[locality,]) %in% unique(activity_locations[[activity]][[6]])]
+        counts=sapply(1:length(distances),function (x) sum(activity_locations[[activity]][activity_locations[[activity]][[6]]==names(distances[x]),2] ))
         
-        #set relative likelihood of staying in locality (ASSUMPTION) -- this gives approx 2/3 chance that will stay in locale
-        if(stay_in_locality==1)
+        #setting relative likelihood of staying in locality:
+        if(stay_in_locality==1) #avoid Inf
         {
           stay_in_locality==0.9999999
         }
-        delta=stay_in_locality/(1-stay_in_locality)
-        if(locality %in% names(distances)) {distances[locality]<-1/((delta)*sum (1/distances[names(distances)!=locality]))}
+        
+        
+        delta=stay_in_locality/(1-stay_in_locality) #requried coefficient
+        #set relative probability for current locality if it contains relevant locations
+        if(locality %in% names(distances)) 
+        {
+          distances[locality]<-1/((delta)*sum (1/distances[names(distances)!=locality]))
+        }
+        #factor in relative counts for each locality (more popular localities are "closer") 
+        distances=distances/(counts/(sum(counts)))
         #scale probabilities to sum to 1
-        prob = 1000/(distances)/(sum(1000/distances))
+        prob = counts/(distances)/(sum(counts/distances))
         choose_locality=sample(distances,1,prob=prob)
         locality=names(choose_locality)
         choose=sample(nrow(activity_locations[[activity]][activity_locations[[activity]][[6]]==locality,]),1)
@@ -333,7 +337,7 @@ type_plan<-function (n_activities,number_of_agents,travel_factor,locations_from_
 
   activity_locations<-location_map(locations_from_csv =locations_from_csv[[1]],location_names=location_names,subgroup=type)
   activity_locations<-allocation_checker(activity_locations,number_of_agents,subgroup = type)
-  PLANS<-plan_locations(plan_times = plan_times_type$Plans,activity_locations =activity_locations,locality_distances=locations_from_csv[[2]],stay_in_locality = (1-travel_factor))  
+  PLANS<-plan_locations(plan_times = plan_times_type$Plans,activity_locations =activity_locations,locality_distances=locations_from_csv[[2]],locality_allocations=locations_from_csv[[3]],stay_in_locality = (1-travel_factor))  
   output<-list(Agents=plan_times_type$Agents,Plans=PLANS$PLANS,updated_activity_locations=PLANS$updated_activity_locations)
   
   return(output)
@@ -578,18 +582,22 @@ read_locations_from_csv<-function(locations_csv_file)
   locs<-locs[locs[[allocation_title]]>0,]
   #reduce to necessary information
   locations<-locs[,c(location_type_title,allocation_title,xcoord_title,ycoord_title,address_title,locality_title)]
-  #get average point for each location
+  #get average point for each location, as well as total allocation count
   averages=data.frame(xcoord=double(),ycoord=double())
+  total_allocations=vector()
   for (location in unique(locations[[locality_title]]))
   {
     points=locations[locations[[locality_title]]==location,3:4] 
+    count=sum(locations[locations[[locality_title]]==location,2])
+    names(count)=location
     point=t(as.data.frame(colSums(points)/nrow(points)))
     rownames(point)=location
     averages=rbind(averages,point)
+    total_allocations=c(total_allocations,count)
   }
   #distance matrix for all localities
   d=as.matrix(dist(averages))
-  LOCATIONS<-list(locations=locations,distances=d)
+  LOCATIONS<-list(locations=locations,distances=d,allocations=total_allocations)
   return(LOCATIONS)
 }
 
@@ -608,8 +616,9 @@ inputs<-function (distributions_file,locations_file,numbers_file,travel_file)
 
 main<-function ()
 {
+  ptm<-proc.time()
   args<-commandArgs(trailingOnly = T)
-  #args<-c("typical-summer-weekday/distributions.csv","typical-summer-weekday/location_maps.csv","typical-summer-weekday/numbers.csv","typical-summer-weekday/travel_factor.csv","Locations.csv","typical-summer-weekday/plans.xml")
+  #args<-c("scenarios/typical-summer-weekday/distributions.csv","scenarios/typical-summer-weekday/location_maps.csv","scenarios/typical-summer-weekday/numbers.csv","scenarios/typical-summer-weekday/travel_factor.csv","Locations.csv","scenarios/typical-summer-weekday/test.xml")
 
   input<-inputs(distributions_file = args[1],locations_file = args[2],numbers_file = args[3],travel_file=args[4])  
   locations_csv<-read_locations_from_csv(args[5])
@@ -621,6 +630,7 @@ main<-function ()
     run<-type_plan(n_activities = input$distributions[[Type]],number_of_agents =input$numbers[Type],travel_factor=input$travel[Type],locations_from_csv = locations_csv,location_names = input$locations[[Type]],type = Type)
     PLANS[[Type]]<-run$Plans
     AGENTS[[Type]]<-run$Agents
+    #update allocations
     locations_csv$locations[run$updated_activity_locations,][[2]]<- locations_csv$locations[run$updated_activity_locations,][[2]]-1
     
   }
@@ -630,7 +640,7 @@ main<-function ()
   write_xml(PLANS = PLANS,output_location = args[6])
   
   write_log(AGENTS = AGENTS,DISTRIBUTIONS = input$distributions)
-  
-  print("Finished.")
+  ptm<-proc.time()-ptm
+  print(paste0("Finished plan algorithm in ",ptm[1]," seconds."))
 }
 main()

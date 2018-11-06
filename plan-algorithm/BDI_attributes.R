@@ -209,7 +209,7 @@ set_attributes<- function(numbers,dependents,thresholds,stay,ghf)
     if (runif(1)<dependents[subgroup])
       {
         dep=1
-        init_response<-sample(thresholds[[subgroup]][1]:3,1)
+        init_response<-sample(thresholds[[subgroup]][1]:min(3,thresholds[[subgroup]][2]),1) #all with  dependents will respond to evacuate now warning
       }
     else
       {
@@ -253,7 +253,7 @@ main<-function()
 {
   
   args<-commandArgs(trailingOnly = T)
-  #args<-c("typical-summer-weekday/numbers.csv","typical-summer-weekday/dependents.csv","typical-summer-weekday/thresholds.csv","typical-summer-weekday/stay.csv","typical-summer-weekday/prob_go_home.csv","typical-summer-weekday/plans.xml","typical-summer-weekday/test.xml","Refuges.csv")
+  #args<-c("scenarios/typical-summer-weekday/numbers.csv","scenarios/typical-summer-weekday/dependents.csv","scenarios/typical-summer-weekday/thresholds.csv","scenarios/typical-summer-weekday/stay.csv","scenarios/typical-summer-weekday/prob_go_home.csv","scenarios/typical-summer-weekday/plans.xml","scenarios/typical-summer-weekday/test.xml","Refuges.csv")
   numbers<-read_numbers(numbers_file = args[1])
   dependents<-read_dependents(dependents_file = args[2])
   thresholds<-read_thresholds(thresholds_file = args[3])

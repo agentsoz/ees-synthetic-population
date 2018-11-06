@@ -200,14 +200,25 @@ The plots below show what the distribution of activities might look like for the
 
 ```
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-## home     0    0    0    0    0    0    0    0    0     0     0     0
+## home   100  100   90   20   10    5    5   10   40    60    80   100
 ## work     0    0    0    0    0    0    0    0    0     0     0     0
-## beach    0    0    0   10   20   60   70   60   30    10     5     0
-## shops    0    0    0   10   20   30   20   20   60    50    20     0
-## other  100  100  100   80   60   10   10   20   10    40    75   100
+## beach    0    0    5   10   20   40   50   40   20    10     5     0
+## shops    0    0    0   10   20   20   20   20   30    20    10     0
+## other    0    0    5   60   50   35   25   30   10    10     5     0
 ```
 
 ![](synthetic-population_files/figure-html/unnamed-chunk-9-3.png)<!-- -->
+
+```
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+## home   100  100 95.0 95.0   90 85.0 90.0 95.0 95.0   100   100   100
+## work     0    0  0.0  0.0    0  0.0  0.0  0.0  0.0     0     0     0
+## beach    0    0  2.5  2.5    5 10.0  5.0  2.5  2.5     0     0     0
+## shops    0    0  0.0  0.0    0  2.5  2.5  2.5  2.5     0     0     0
+## other    0    0  2.5  2.5    5  2.5  2.5  0.0  0.0     0     0     0
+```
+
+![](synthetic-population_files/figure-html/unnamed-chunk-9-4.png)<!-- -->
 
 
 ## V0.0
@@ -279,9 +290,11 @@ The above information could then be used to automatically construct a "daily pla
 
 Within the model, we will account for the following groups of people (based on input from regional stakeholders):
 
-* `resident` : as captured by the [ABS census data](http://www.censusdata.abs.gov.au/census_services/getproduct/census/2016/quickstat/LGA26490); several methods exist for creating a synthetic population for this cohort, and one that could be readily applied here is the [algorithm from Wicramasinghe et al.](https://github.com/agentsoz/synthetic-population) from RMIT University. 
+* `resident` : as captured by the [ABS census data](http://www.censusdata.abs.gov.au/census_services/getproduct/census/2016/quickstat/LGA26490); several methods exist for creating a synthetic population for this cohort, and one that could be readily applied here is the [algorithm from Wicramasinghe et al.](https://github.com/agentsoz/synthetic-population) from RMIT University.
+* `part-time resident` : people that own a property and spend an extended period of time in the region, but are not permanently based there. 
 * `regular visitor` : people that regularly visit the region during the summer months, camping or in *holiday homes*, and have a working knowledge of local roads and destinations; some information on this cohort could be derived from [VISTA data](https://transport.vic.gov.au/data-and-research/vista/). (<mark>Any other dataset that might give stats on this group?</mark>)
-* `tourist` : people that visit the region for the day or on a short-stay visit, and generally do not know the area well; some information on this cohort could be derived from [VISTA data](https://transport.vic.gov.au/data-and-research/vista/). (<mark>Any other dataset that might give stats on this group?</mark>)
+*`overnight visitor` : people that are visiting and staying the region for a short period of time in accommodation but do not have any knowledge of the area.
+* `day visitor` : people that visit the region for the day or on a short-stay visit, and generally do not know the area well; some information on this cohort could be derived from [VISTA data](https://transport.vic.gov.au/data-and-research/vista/). (<mark>Any other dataset that might give stats on this group?</mark>)
 
 ## Activity types
 
@@ -313,8 +326,8 @@ Activity | Description
 
 ## Model assumptions
 
-1. Each population subgroup (i.e, `resident`, `regular visitor`, `tourist`) will differ in how they perform the above activities in the following ways:
-    1. The proportions in which subgroups perform different activities will be different; for instance tourists might be more likely to go to the beach than residents; another example is that all residents will perform the home activity while none of the tourists will.
+1. Each population subgroup <!-- (i.e, `resident`, `regular visitor`, `tourist`)--> will differ in how they perform the above activities in the following ways: 
+    1. The proportions in which subgroups perform different activities will be different; for instance tourists (`overnight visitor`,`day visitor`) might be more likely to go to the beach than residents; another example is that all residents will perform the home activity while none of the tourists will.
     1. The times at which subgroups perform activities will be different: for instance, tourists might be more likely to visit the beach around noon, whereas residents might be more inclined to go to the beach in the mornings and evenings to avoid the rush.
     1. The durations for which each subgroup performs activites will be different: for instance, tourists might spend more time at the beach than residents.
 
@@ -409,11 +422,11 @@ Here is an example plan for a resident, with durations, and where only `work` is
 
 ```
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-## home     1    1    1    1    0    0    0    0    1     0     1     1
-## work     0    0    0    0    1    1    1    1    0     0     0     0
+## home     1    1    1    0    0    0    0    0    1     1     1     1
+## work     0    0    0    1    1    1    1    0    0     0     0     0
 ## beach    0    0    0    0    0    0    0    0    0     0     0     0
-## shops    0    0    0    0    0    0    0    0    0     0     0     0
-## other    0    0    0    0    0    0    0    0    0     1     0     0
+## shops    0    0    0    0    0    0    0    1    0     0     0     0
+## other    0    0    0    0    0    0    0    0    0     0     0     0
 ```
 
 ```
@@ -428,11 +441,11 @@ Here is an example plan for a resident, with durations, and where only `work` is
 
 ```
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-## home    90   90   82   73   30   20   15   10   32    51    59    69
-## work     4    4   13   16   49   57   52   49   39    31    27    27
-## beach    0    0    0    0    4    4   11   17    3     0     0     0
-## shops    0    0    0    0   15   14   19   20   23    10    10     0
-## other    6    6    5   11    2    5    3    4    3     8     4     4
+## home    93   92   86   79   30   15   12    7   22    46    71    73
+## work     5    5    7   13   51   60   61   55   37    28    25    25
+## beach    0    0    0    0    3    7    9   14    7     0     0     0
+## shops    0    0    0    0    6    9   12   20   24    12     1     0
+## other    2    3    7    8   10    9    6    4   10    14     3     2
 ```
 
 ![](synthetic-population_files/figure-html/unnamed-chunk-15-1.png)<!-- -->![](synthetic-population_files/figure-html/unnamed-chunk-15-2.png)<!-- -->
