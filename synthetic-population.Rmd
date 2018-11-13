@@ -46,9 +46,9 @@ require(ggplot2)
 # Assumes 12 entries per row (for each 2 hour interval)
 plotActivities <- function (plotTitle, x_lab, y_lab, activities, limitY=TRUE) {
 df<-melt(activities)
-colnames(df)<-c("Activity", "Hour", "Proportion")
+colnames(df)<-c("Activity", "Hour", "Percentage")
 df$Hour<-(df$Hour-0.5)*2 # get the time of day correct
-gg<-ggplot(df, aes(Hour, Proportion, fill=Activity)) +
+gg<-ggplot(df, aes(Hour, Percentage, fill=Activity)) +
   geom_col() +
   ggtitle(plotTitle) + 
   scale_x_continuous(name=y_lab, limits=c(0,24), breaks=seq(2,24,2)) +
@@ -308,7 +308,7 @@ Tourist | 7000
 
 The following table shows a suggested distribution of responses to various messages, for different types of persons (**each row must add up to 100%**). <mark>For discussion with Surf Coast Shire.</mark>
 
-Person type | Evacuate on `Advice` | Evacuate on `Watch & Act` | Evacuate on `Evacuate Now` | Will not evacuate | Justification 
+Person type | Evacuate on `Advice` | Evacuate on `Watch , Act` | Evacuate on `Evacuate Now` | Will not evacuate | Justification 
 --------------|---------|---------|---------|---------|--------------------------------------------
 Resident | 5% | 15% | 50% | 30% | Least likely to react to initial warnings; most likely to stay back 
 Regular Visitor | 10% | 20% | 60% | 10% | More likely to react to warnings; less likely to stay back 
@@ -806,8 +806,48 @@ plotActivities("Resident activities (Output)", "Percentage", "Time of day", n_ac
 If we compare this to the expected allocations, we see that late in the day, `home` tends to be down and `work` up from expected: 
 ```{r echo=FALSE, fig.width=5, fig.height=3}
 #(R_activities/N-r_activities/1000)
+#hour   = c(  2,   4,   6,   8,  10,  12,  14,  16,  18,  20,  22,  24)
+r_home  = c(900, 900, 850, 750, 300, 200, 150, 100, 200, 450, 700, 850)
+r_work  = c( 50,  50, 100, 150, 500, 600, 600, 500, 500, 400, 200, 100)
+r_beach = c(  0,   0,   0,   0,  50, 50,  100, 150,  50,   0,   0,   0)
+r_shops = c(  0,   0,   0,   0, 100, 100, 100, 200, 200, 100,  50,   0)
+r_other = 1000 - (r_home + r_work + r_beach + r_shops)
+r_activities = rbind(home=r_home, work=r_work, beach=r_beach, shops=r_shops, other=r_other)
+n_activities = 100 * (r_activities / colSums(r_activities))
+show(n_activities)
+plotActivities("Resident", "Percentage", "Time of day", n_activities)
+
+
+### Tourist
+
+#hour   = c(  2,   4,   6,   8,   10,  12,  14,  16,  18,  20,  22,  24)
+t_home  = c(  100,100, 90, 20, 10,  5,  5, 10, 40, 60, 80,100)*10
+t_work  = c(  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0)
+t_beach = c(  0,  0,  5, 10, 20, 40, 50, 40, 20, 10,  5,  0)*10
+t_shops = c(   0,  0,  0, 10, 20, 20, 20, 20, 30, 20, 10,  0)*10
+t_other = 1000 - (t_home + t_work + t_beach + t_shops)
+t_activities = rbind(home=t_home, work=t_work, beach=t_beach, shops=t_shops, other=t_other)
+n_activities = 100 * (t_activities / colSums(t_activities))
+show(n_activities)
+plotActivities("VisitorDaytime", "Percentage", "Time of day", n_activities)
+ 
+
+
+
 diff_activities<-n_activities-r_activities
+diff_activities[1,]<-c( 0.03 ,	0.16 , 0.13 ,	0.36 ,	0.19 ,	0.09 ,	-0.2 , -0.03 , 0.35 ,-3.83 ,	-0.57 ,	-0.09)
+diff_activities[2,]<-c(-0.41 ,	-0.41 ,	0.05 , -0.25 ,	-0.12	, 0.04 , -0.39 ,	-0.49 ,	-0.2,	5.04,	0.19,	0.19)
+diff_activities[3,]<-c( 0	, 0 ,	0 ,	0	, -0.08 ,	-0.18	, 0.08 ,	0.79 ,	-0.2 ,0 ,	0	, 0)
+diff_activities[4,]<-c(0,	0,	0	,-0.3,	-0.13,	-0.15,	0.52,	-0.26,	0.12,-1.07,	-0.01,	0)
+diff_activities[5,]<-c(	0.38,	0.25,	-0.18,	0.19,	0.14,	0.2,	-0.01,	-0.01,	-0.07,0.14,	0.39,	-0.1)
 plotActivities("Resident activities (Output - Input)", "Percentage", "Time of day", diff_activities, limitY=FALSE)
+
+diff_activities[1,]<-c(0,0,-0.05,-0.19,0.38,-0.04,0.07,0.25,-0.63,0.03,-0.23,0)
+diff_activities[2,]<-c(0,0,0,0,0,0,0,0,0,0,0,0)
+diff_activities[3,]<-c(0,0,-0.03,0.22,-0.11,0.53,-0.32,-0.26,-0.35,0.09,-0.08,0)
+diff_activities[4,]<-c(0,0,0,0.32,-0.36,-0.27,0.19,0.43,0.54,0.12,0.23,0)
+diff_activities[5,]<-c(0,0,0.08,-0.35,0.09,-0.21,0.07,-0.41,0.45,-0.25,0.07,0)
+plotActivities("VisitorDaytime activities (Output - Input)", "Percentage", "Time of day", diff_activities, limitY=FALSE)
 ```
 
 

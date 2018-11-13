@@ -248,7 +248,7 @@ Tourist | 7000
 
 The following table shows a suggested distribution of responses to various messages, for different types of persons (**each row must add up to 100%**). <mark>For discussion with Surf Coast Shire.</mark>
 
-Person type | Evacuate on `Advice` | Evacuate on `Watch & Act` | Evacuate on `Evacuate Now` | Will not evacuate | Justification 
+Person type | Evacuate on `Advice` | Evacuate on `Watch , Act` | Evacuate on `Evacuate Now` | Will not evacuate | Justification 
 --------------|---------|---------|---------|---------|--------------------------------------------
 Resident | 5% | 15% | 50% | 30% | Least likely to react to initial warnings; most likely to stay back 
 Regular Visitor | 10% | 20% | 60% | 10% | More likely to react to warnings; less likely to stay back 
@@ -422,10 +422,10 @@ Here is an example plan for a resident, with durations, and where only `work` is
 
 ```
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-## home     1    1    1    0    0    0    0    0    1     1     1     1
-## work     0    0    0    1    1    1    1    0    0     0     0     0
+## home     1    1    1    1    0    0    0    0    1     1     1     1
+## work     0    0    0    0    1    1    1    1    0     0     0     0
 ## beach    0    0    0    0    0    0    0    0    0     0     0     0
-## shops    0    0    0    0    0    0    0    1    0     0     0     0
+## shops    0    0    0    0    0    0    0    0    0     0     0     0
 ## other    0    0    0    0    0    0    0    0    0     0     0     0
 ```
 
@@ -441,18 +441,39 @@ Here is an example plan for a resident, with durations, and where only `work` is
 
 ```
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
-## home    93   92   86   79   30   15   12    7   22    46    71    73
-## work     5    5    7   13   51   60   61   55   37    28    25    25
-## beach    0    0    0    0    3    7    9   14    7     0     0     0
-## shops    0    0    0    0    6    9   12   20   24    12     1     0
-## other    2    3    7    8   10    9    6    4   10    14     3     2
+## home    91   92   87   80   30   12    9    6   26    45    68    74
+## work     4    4    8   12   53   64   66   62   42    31    25    25
+## beach    0    0    0    0    3    7   13   12    9     0     0     0
+## shops    0    0    0    0    9   10   10   18   18    11     5     0
+## other    5    4    5    8    5    7    2    2    5    13     2     1
 ```
 
 ![](synthetic-population_files/figure-html/unnamed-chunk-15-1.png)<!-- -->![](synthetic-population_files/figure-html/unnamed-chunk-15-2.png)<!-- -->
 
 
 If we compare this to the expected allocations, we see that late in the day, `home` tends to be down and `work` up from expected: 
+
+```
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+## home    90   90   85   75   30   20   15   10   20    45    70    85
+## work     5    5   10   15   50   60   60   50   50    40    20    10
+## beach    0    0    0    0    5    5   10   15    5     0     0     0
+## shops    0    0    0    0   10   10   10   20   20    10     5     0
+## other    5    5    5   10    5    5    5    5    5     5     5     5
+```
+
 ![](synthetic-population_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
+```
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+## home   100  100   90   20   10    5    5   10   40    60    80   100
+## work     0    0    0    0    0    0    0    0    0     0     0     0
+## beach    0    0    5   10   20   40   50   40   20    10     5     0
+## shops    0    0    0   10   20   20   20   20   30    20    10     0
+## other    0    0    5   60   50   35   25   30   10    10     5     0
+```
+
+![](synthetic-population_files/figure-html/unnamed-chunk-16-2.png)<!-- -->![](synthetic-population_files/figure-html/unnamed-chunk-16-3.png)<!-- -->![](synthetic-population_files/figure-html/unnamed-chunk-16-4.png)<!-- -->
 
 
 ## Activity distributions in original SCS plans file

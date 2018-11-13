@@ -1,5 +1,5 @@
 DIR=$(dirname "$0") # directory of this script
-SCENARIO=$DIR/scenarios/falls-festival # scenario location relative to script
+SCENARIO=$DIR/scenarios/typical-summer-weekday # scenario location relative to script
 
 # Call the plan generation script with the required parameters
 Rscript $DIR/plan-algorithm.R \
