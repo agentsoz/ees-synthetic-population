@@ -176,6 +176,7 @@ if (grepl("id=",broke[i],fixed=T))
           attrib=paste0(attrib,'      <attribute name="InvacLocationPreference" class="java.lang.String">',invac[1],',',invac[2],',',invac[3],'</attribute>\n')
           
           # some initial archetypes-based defaults (averages across all archetypes)
+          attrib=paste0(attrib,'      <attribute name="Archetype" class="java.lang.String" >MadeUpArchetype</attribute>\n')
           attrib=paste0(attrib,'      <attribute name="ImpactFromFireDangerIndexRating" class="java.lang.String" >0.04</attribute>\n')
           attrib=paste0(attrib,'      <attribute name="ImpactFromImmersionInSmoke" class="java.lang.String" >0.2</attribute>\n')
           attrib=paste0(attrib,'      <attribute name="ImpactFromMessageAdvice" class="java.lang.String" >0.04</attribute>\n')
