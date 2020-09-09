@@ -1,4 +1,6 @@
-
+assignAttributes<-function (arglist = NULL)
+{
+  
 options(stringsAsFactors = F)
 
 read_numbers<- function(numbers_file)
@@ -270,11 +272,14 @@ set_attributes<- function(numbers,dependents,thresholds,stay,ghf)
  return (AGENTS) 
 }
 
-main<-function()
-{
-  
-  args<-commandArgs(trailingOnly = T)
-  #args<-c("scenarios/typical-summer-weekday/numbers.csv","scenarios/typical-summer-weekday/dependents.csv","scenarios/typical-summer-weekday/thresholds.csv","scenarios/typical-summer-weekday/stay.csv","scenarios/typical-summer-weekday/prob_go_home.csv","scenarios/typical-summer-weekday/plans.xml","scenarios/typical-summer-weekday/test.xml","Refuges.csv")
+# Main starts here
+
+  if (is.null(arglist)) {
+    args<-commandArgs(trailingOnly = T)
+  } else {
+    args <- arglist
+  }
+
   numbers<-read_numbers(numbers_file = args[1])
   dependents<-read_dependents(dependents_file = args[2])
   thresholds<-read_thresholds(thresholds_file = args[3])
@@ -285,4 +290,16 @@ main<-function()
   print("Appending BDI attributes to agents...")
   write_attribute_plan(plan_attributes,locations=locations,input_location = args[7],output_location = args[6])
 }
-main()
+
+assignAirleysAttributes <- function() {
+  args<-c("scenarios/scs-2020-aireys-inlet/numbers.csv",
+          "scenarios/scs-2020-aireys-inlet/dependents.csv",
+          "scenarios/scs-2020-aireys-inlet/thresholds.csv",
+          "scenarios/scs-2020-aireys-inlet/stay.csv",
+          "scenarios/scs-2020-aireys-inlet/prob_go_home.csv",
+          "scenarios/scs-2020-aireys-inlet/plans.xml",
+          "scenarios/scs-2020-aireys-inlet/_plan.xml",
+          "Refuges.csv"
+  )
+  assignAttributes(args)
+}

@@ -1,4 +1,6 @@
-
+buildPopulation<-function (arglist = NULL)
+{
+  
 options(stringsAsFactors = F)
 
 derive_start_time <- function (n_activity,durations)
@@ -614,11 +616,15 @@ inputs<-function (distributions_file,locations_file,numbers_file,travel_file)
   return(INPUT)  
 }
 
-main<-function ()
-{
+
+# Main starts here
+
   ptm<-proc.time()
-  args<-commandArgs(trailingOnly = T)
-  #args<-c("scenarios/typical-summer-weekday/distributions.csv","scenarios/typical-summer-weekday/location_maps.csv","scenarios/typical-summer-weekday/numbers.csv","scenarios/typical-summer-weekday/travel_factor.csv","Locations.csv","scenarios/typical-summer-weekday/test.xml")
+  if (is.null(arglist)) {
+      args<-commandArgs(trailingOnly = T)
+  } else {
+    args <- arglist
+  }
 
   input<-inputs(distributions_file = args[1],locations_file = args[2],numbers_file = args[3],travel_file=args[4])  
   locations_csv<-read_locations_from_csv(args[5])
@@ -643,4 +649,15 @@ main<-function ()
   ptm<-proc.time()-ptm
   print(paste0("Finished plan algorithm in ",ptm[1]," seconds."))
 }
-main()
+
+buildAirleysPopulation <- function() {
+  args<-c("scenarios/scs-2020-aireys-inlet/distributions.csv",
+          "scenarios/scs-2020-aireys-inlet/location_maps.csv",
+          "scenarios/scs-2020-aireys-inlet/numbers.csv",
+          "scenarios/scs-2020-aireys-inlet/travel_factor.csv",
+          "Locations.csv",
+          "scenarios/scs-2020-aireys-inlet/_plan.xml"
+  )
+  buildPopulation(args)
+}
+
