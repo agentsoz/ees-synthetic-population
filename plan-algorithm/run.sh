@@ -1,5 +1,5 @@
 DIR=$(dirname "$0") # directory of this script
-SCENARIO=$DIR/scenarios/scs-2020-aireys-inlet # scenario location relative to script
+SCENARIO=$DIR/scenarios/typical-midweek-day-in-jan
 
 # Call the plan generation script with the required parameters
 Rscript --vanilla -e "source('$DIR/plan-algorithm.R'); buildPopulation(c(
