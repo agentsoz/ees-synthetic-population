@@ -1,32 +1,32 @@
 FullTime Resident,
-home,Residential, Isolated Property
-work,Business District
+home,Home
+work,Work,Work General,Farm
 beach,Beach
-shops,Shops
-other,School,
+shops,Shop Retail,Shop Food,Shop Tavern,Shop General,Business General,Business Other
+other,Study Other,School,Study General,Kindergarten ,Visiting,Recreation,Health,Service Centre
 
 PartTime Resident,
-home,Residential
-work,Business District
+home,Home
+work,Farm,Work,Work General
 beach,Beach
-shops,Shops
-other,School
+shops,Shop Retail,Shop Food,Shop Tavern, Business Other,Shop General,Business General
+other,Study Other,Study General,Visiting,Recreation,Health,Service Centre
 
 Regular Visitor,
-home,Residential
-work,Business District
+home,Out of Region
+work,Work,Work General,Farm
 beach,Beach
-shops,Shops
-other,NSP
+shops, Shop Retail,Shop Food,Shop Tavern, Business Other
+other, Study Other,School, Kindergarten,Recreation,Health
 
 Overnight Visitor,
-home,Caravan Park,Hotel,
+home,Caravan Park,Hotel,B&B,Camp
 beach,Beach
-shops,Shops
-other,Open Air,NSP, River
+shops, Shop Retail,Shop Food,Shop Tavern, Business Other
+other,Visiting,Recreation
 
 Daytime Visitor,
 home,Out of Region
 beach,Beach
-shops,Shops
-other,Open Air,NSP
+shops,Shop Retail,Shop Food,Shop Tavern, Business Other
+other,Visiting,Recreation

@@ -204,8 +204,9 @@ location_map<-function (locations_from_csv,location_names,subgroup)
     LOCATIONS[[activity]]<-locations_from_csv[locations_from_csv[[location_type_title]] %in% location_names[[activity]],]
     if (length(unique(LOCATIONS[[activity]][[location_type_title]]))!=length(location_names[[activity]]))
     {
-      print(paste0("ERROR: activity '",activity,"' for type '",subgroup,"' has been assigned locations that do not exist in the locations data. Please change the location map. Possible locations are:"))
-      show(levels(locations_from_csv[[location_type_title]]))    
+      print(paste0("ERROR: activity '",activity,"' for type '",subgroup,"' has been assigned locations that do not exist in the locations data. Please change the location map."))
+      cat("!!Expecting locations of type:", sort(location_names[[activity]]), "\n")
+      cat("!!Found locations of type:", sort(unique(LOCATIONS[[activity]][[location_type_title]])), "\n")
       return()
     }
   }  
@@ -661,3 +662,13 @@ buildAirleysPopulation <- function() {
   buildPopulation(args)
 }
 
+buildTypicalMidweekDayInJanPopulation <- function() {
+  args<-c("scenarios/typical-midweek-day-in-jan/distributions.csv",
+          "scenarios/typical-midweek-day-in-jan/location_maps.csv",
+          "scenarios/typical-midweek-day-in-jan/numbers.csv",
+          "scenarios/typical-midweek-day-in-jan/travel_factor.csv",
+          "SCS-Locations-2021/SCS-Locations-2021.csv",
+          "scenarios/typical-midweek-day-in-jan/_plan.xml"
+  )
+  buildPopulation(args)
+}

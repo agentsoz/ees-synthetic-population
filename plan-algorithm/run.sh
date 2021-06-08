@@ -7,7 +7,7 @@ Rscript --vanilla -e "source('$DIR/plan-algorithm.R'); buildPopulation(c(
   '$SCENARIO/location_maps.csv',
   '$SCENARIO/numbers.csv',
   '$SCENARIO/travel_factor.csv',
-  '$SCENARIO/../../Locations.csv',
+  '$SCENARIO/../../SCS-Locations-2021/SCS-Locations-2021.csv',
   '$SCENARIO/plans.xml'))"
 
 # Call the attribute generator with required parameters
